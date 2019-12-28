@@ -1,18 +1,45 @@
 import
   strutils, macros
 
-macro stringConstants(cs: string): untyped =
+macro stringConstants(cs: typed): untyped =
   result = newStmtList()
   for c in split($cs, " "):
     let i = newIdentNode(c)
     result.add quote do:
       var `i`* {.importc,inject.}: cstring
 
+macro functionAllNumbers(declaration: typed): untyped =
+  expectKind(declaration, nnkStrLit)
+  let funName = ($declaration).split("(")[0].newIdentNode
+  let args = ($declaration).split("(")[1].split(")")[0].split(",")
+
+  proc makeParams(): NimNode =
+    result = newTree(nnkIdentDefs)
+    for a in args:
+      result.add newIdentNode(a)
+    result.add newIdentNode("Number")
+    result.add newEmptyNode()
+
+  newTree(nnkProcDef, 
+          newTree(nnkPostfix,
+                  newIdentNode("*"),
+                  funName),
+          newEmptyNode(),
+          newEmptyNode(),
+          newTree(nnkFormalParams,
+                  newEmptyNode(),
+                  makeParams()),
+          newTree(nnkPragma,
+                  newIdentNode("importc")),
+          newEmptyNode(),
+          newEmptyNode())
+
 #################
 
 type 
   Color* {.importc.} = ref object
   Graphics* {.importc.} = ref object
+  Number = cint | cfloat # XXX ?
 
 #################
 ## RENDERING
@@ -36,6 +63,24 @@ proc createGraphics*(w, h: cint, renderer: cstring) {.importc.}
 proc blendMode*(mode: cstring) {.importc.}
 proc setAttributes*(key: cstring, value: bool) {.importc.}
 proc setAttributes*[T](obj: T) {.importc.} # XXX?
+
+#################
+## TRANSFORM
+#################
+
+functionAllNumbers("applyMatrix(a, b, c, d, e, f)")
+proc resetMatrix*() {.importc.}
+functionAllNumbers("rotate(angle)")
+# TODO rotate(angle, vec[Number])
+functionAllNumbers("rotateX(angle)")
+functionAllNumbers("rotateY(angle)")
+functionAllNumbers("rotateZ(angle)")
+# TODO scale
+functionAllNumbers("shearX(angle)")
+functionAllNumbers("shearY(angle)")
+functionAllNumbers("translate(x, y)")
+functionAllNumbers("translate(x, y, z)")
+# TODO translate(vector)
 
 #####
 ## COLOR
