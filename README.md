@@ -7,3 +7,9 @@ nim js script.nim
 python -m http.server
 ```
 
+## TODO
+* fix polymorphism
+* bindings for undocumented `LEFT_ARROW` and such
+* document hooks
+* more general js binding framework
+

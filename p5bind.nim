@@ -3,7 +3,7 @@ import
 
 # TODO polymorphic numbers!
 
-macro constants(T: typed, cs: typed): untyped =
+macro variables(T: typed, cs: typed): untyped =
   expectKind(cs, nnkStrLit)
   expectKind(T, nnkSym)
 
@@ -12,6 +12,11 @@ macro constants(T: typed, cs: typed): untyped =
     let i = newIdentNode(c)
     result.add quote do:
       var `i`* {.importc,inject.}: `T`
+
+macro constants(T: typed, cs: typed): untyped =
+  # TODO
+  quote do:
+    variables(`T`, `cs`)
 
 macro functionAllNumbers(declaration: typed): untyped =
   expectKind(declaration, nnkStrLit)
@@ -45,7 +50,7 @@ macro functionAllNumbers(declaration: typed): untyped =
 type 
   Color* {.importc.} = ref object
   Graphics* {.importc.} = ref object
-  Number = cint | cfloat | cdouble # XXX ?
+  Number = cint | cdouble # XXX ?
 
 #################
 ## RENDERING
@@ -95,6 +100,35 @@ functionAllNumbers("translate(x, y, z)")
 constants(cdouble, "HALF_PI PI QUARTER_PI TAU TWO_PI")
 constants(cstring, "DEGREES RADIANS")
 
+#################
+## EVENTS
+#################
+
+## Acceleration
+constants(cstring, "LANDSCAPE PORTRAIT")
+variables(cstring, "deviceOrientation")
+variables(cint, "accelerationX accelerationY accelerationZ")
+variables(cint, "paccelerationX paccelerationY paccelerationZ")
+variables(cint, "rotationX rotationY rotationZ")
+variables(cint, "protationX protationY protationZ")
+variables(cstring, "turnAxis")
+functionAllNumbers("setShakeThreshold(value)")
+functionAllNumbers("setMoveThreshold(value)")
+
+## Keyboard
+variables(bool, "keyIsPressed")
+variables(cint, "key keyCode")
+functionAllNumbers("keyIsDown(code)")
+
+## Mouse
+variables(cint, "movedX movedY mouseX mouseY pmouseX pmouseY") # XXX are these really int?
+variables(cint, "winMouseX winMouseY pwinMouseX pwinMouseY")
+constants(cstring, "LEFT RIGHT CENTER")
+variables(cstring, "mouseButton")
+variables(bool, "mouseIsPressed")
+proc requestPointerLock*() {.importc.}
+proc exitPointerLock*() {.importc.}
+
 #####
 ## COLOR
 #####
@@ -113,4 +147,6 @@ proc rect*(a,b,c,d: cint) {.importc.}
 proc line*(a,b,c,d: cint) {.importc.}
 proc stroke*(a,b,d: cint) {.importc.}
 proc strokeWeight*(a: cint) {.importc.}
+
+proc alert(_: cdouble) {.importc.}
 
