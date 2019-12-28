@@ -7,7 +7,8 @@ proc setup {.exportc.} =
   fill(c)
 
 proc draw {.exportc.} =
-  blendMode(LIGHTEST)
+  blendMode(DARKEST)
+  rotate(QUARTER_PI)
   strokeWeight(30);
   stroke(80, 150, 255);
   line(25, 25, 75, 75);

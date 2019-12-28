@@ -1,15 +1,21 @@
 import
   strutils, macros
 
-macro stringConstants(cs: typed): untyped =
+# TODO polymorphic numbers!
+
+macro constants(T: typed, cs: typed): untyped =
+  expectKind(cs, nnkStrLit)
+  expectKind(T, nnkSym)
+
   result = newStmtList()
   for c in split($cs, " "):
     let i = newIdentNode(c)
     result.add quote do:
-      var `i`* {.importc,inject.}: cstring
+      var `i`* {.importc,inject.}: `T`
 
 macro functionAllNumbers(declaration: typed): untyped =
   expectKind(declaration, nnkStrLit)
+
   let funName = ($declaration).split("(")[0].newIdentNode
   let args = ($declaration).split("(")[1].split(")")[0].split(",")
 
@@ -17,7 +23,7 @@ macro functionAllNumbers(declaration: typed): untyped =
     result = newTree(nnkIdentDefs)
     for a in args:
       result.add newIdentNode(a)
-    result.add newIdentNode("Number")
+    result.add newIdentNode("Number") # TODO XXX?
     result.add newEmptyNode()
 
   newTree(nnkProcDef, 
@@ -39,16 +45,16 @@ macro functionAllNumbers(declaration: typed): untyped =
 type 
   Color* {.importc.} = ref object
   Graphics* {.importc.} = ref object
-  Number = cint | cfloat # XXX ?
+  Number = cint | cfloat | cdouble # XXX ?
 
 #################
 ## RENDERING
 #################
 
-stringConstants("WEBGL P2D")
-stringConstants("BLEND DARKEST LIGHTEST DIFFERENCE MULTIPLY")
-stringConstants("EXCLUSION SCREEN REPLACE OVERLAY HARD_LIGHT")
-stringConstants("SOFT_LIGHT DODGE BURN ADD REMOVE SUBTRACT")
+constants(cstring, "WEBGL P2D")
+constants(cstring, "BLEND DARKEST LIGHTEST DIFFERENCE MULTIPLY")
+constants(cstring, "EXCLUSION SCREEN REPLACE OVERLAY HARD_LIGHT")
+constants(cstring, "SOFT_LIGHT DODGE BURN ADD REMOVE SUBTRACT")
 
 proc reset*(g: var Graphics) {.importcpp.}
 proc remove*(g: var Graphics) {.importcpp.}
@@ -81,6 +87,13 @@ functionAllNumbers("shearY(angle)")
 functionAllNumbers("translate(x, y)")
 functionAllNumbers("translate(x, y, z)")
 # TODO translate(vector)
+
+#################
+## CONSTANTS
+#################
+
+constants(cdouble, "HALF_PI PI QUARTER_PI TAU TWO_PI")
+constants(cstring, "DEGREES RADIANS")
 
 #####
 ## COLOR
