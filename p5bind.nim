@@ -1,5 +1,5 @@
 import
-  strutils, macros
+  strutils, macros, jsffi
 
 # TODO polymorphic numbers!
 
@@ -134,6 +134,28 @@ type
   TouchInfo {.importc.} = ref object
     x, y, winX, winY, id: cint
 variables(seq[TouchInfo], "touches")
+
+#################
+## ENVIRONMENT
+#################
+variables(cint, "frameCount deltaTime")
+variables(bool, "focused")
+proc frameRate*(): cint {.importc.}
+proc frameRate*(fps: cint) {.importc.}
+proc noCursor*(): cint {.importc.}
+variables(cint, "displayWidth displayHeight windowWidth windowHeight width height")
+proc fullscreen*(): bool {.importc.}
+proc fullscreen*(val: bool) {.importc.}
+functionAllNumbers("pixelDensity(val)")
+proc pixelDensity*(): cint {.importc.} # XXX cint?
+proc displayDensity*(): cint {.importc.} # XXX cint?
+proc getURL*(): cstring {.importc.}
+proc getURLPath*(): seq[cstring] {.importc.}
+# proc getURLParams*(): ref JsObject {.importc.} # TODO !
+constants(cstring, "ARROW CROSS HAND MOVE TEXT WAIT")
+proc cursor*(`type`: cstring) {.importc.}
+proc cursor*(`type`: cstring, x: cint) {.importc.}
+proc cursor*(`type`: cstring, x, y: cint) {.importc.}
 
 #################
 ## STRUCTURE

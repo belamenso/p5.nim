@@ -12,4 +12,9 @@ python -m http.server
 * bindings for undocumented `LEFT_ARROW` and such
 * document hooks
 * more general js binding framework
+* `noDecl` pragma
+* `getURLParams()`
+
+## Notes
+* `print` will not be implemented, use Nim's `echo`
 

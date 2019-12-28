@@ -6,9 +6,10 @@ proc setup {.exportc.} =
   blendMode(DARKEST)
   fill(c)
 
+  cursor(HAND)
+
 proc draw {.exportc.} =
   blendMode(DARKEST)
-  rotate(QUARTER_PI)
   strokeWeight(30);
   stroke(80, 150, 255);
   line(25, 25, 75, 75);
