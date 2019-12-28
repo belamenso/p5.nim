@@ -1,12 +1,21 @@
-import p5bind
+import
+  p5bind, sugar
 
 proc setup {.exportc.} =
+  echo repr textAlign()
+  echo repr textStyle()
+  echo repr textWidth("hello")
+
   createCanvas(500, 500)
   let c = color(255,204,0)
   blendMode(DARKEST)
   fill(c)
 
   cursor(HAND)
+
+  loadFont("",
+    proc() = discard,
+    proc() = echo "font could not be loaded")
 
 proc draw {.exportc.} =
   blendMode(DARKEST)

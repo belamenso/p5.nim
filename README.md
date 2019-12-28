@@ -14,6 +14,7 @@ python -m http.server
 * more general js binding framework
 * `noDecl` pragma
 * `getURLParams()`
+* `p5.Font`
 
 ## Notes
 * `print` will not be implemented, use Nim's `echo`

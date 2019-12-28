@@ -170,6 +170,37 @@ proc pop*() {.importc.}
 proc redraw*() {.importc.}
 proc redraw*(n: cint) {.importc.}
 
+#################
+## TYPOGRAPHY
+#################
+
+## Attributes
+constants(cstring, "TOP BOTTOM BASELINE")
+type TextAlignment* {.importc.} = ref object
+  horizontal, vertical: cstring
+proc textAlign*(): TextAlignment {.importc.}
+proc textAlign*(horizAlign: cstring) {.importc.}
+proc textAlign*(horizAlign, vertAlign: cstring) {.importc.}
+proc textLeading*(): cint {.importc.}
+proc textLeading*(leading: cint) {.importc.}
+proc textSize*(): cint {.importc.}
+proc textSize*(size: cint) {.importc.}
+constants(cstring, "NORMAL ITALIC BOLD BOLDITALIC")
+proc textStyle*(): cstring {.importc.}
+proc textStyle*(style: cstring) {.importc.}
+proc textWidth*(text: cstring): cdouble {.importc.}
+proc textAscent*(): cint {.importc.}
+proc textDescent*(): cint {.importc.}
+
+## Loading & Displaying
+# TODO returns p5.Font
+proc loadFont*(path: cstring) {.importc.}
+proc loadFont*(path: cstring, callback: proc():void) {.importc.}
+proc loadFont*(path: cstring, callback: proc(), onError: proc()) {.importc.}
+# TODO text
+# TODO textFont
+# TODO p5.Font
+
 #####
 ## COLOR
 #####
