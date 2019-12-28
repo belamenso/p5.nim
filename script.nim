@@ -15,6 +15,3 @@ proc draw {.exportc.} =
   stroke(255, 50, 50);
   line(75, 25, 25, 75);
 
-proc deviceTurned {.exportc.} =
-  alert(turnAxis)
-

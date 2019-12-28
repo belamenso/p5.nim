@@ -5,7 +5,7 @@ import
 
 macro variables(T: typed, cs: typed): untyped =
   expectKind(cs, nnkStrLit)
-  expectKind(T, nnkSym)
+  # expectKind(T, nnkSym)
 
   result = newStmtList()
   for c in split($cs, " "):
@@ -129,6 +129,12 @@ variables(bool, "mouseIsPressed")
 proc requestPointerLock*() {.importc.}
 proc exitPointerLock*() {.importc.}
 
+# Touch
+type
+  TouchInfo {.importc.} = ref object
+    x, y, winX, winY, id: cint
+variables(seq[TouchInfo], "touches")
+
 #####
 ## COLOR
 #####
@@ -148,5 +154,8 @@ proc line*(a,b,c,d: cint) {.importc.}
 proc stroke*(a,b,d: cint) {.importc.}
 proc strokeWeight*(a: cint) {.importc.}
 
-proc alert(_: cdouble) {.importc.}
+proc alert*(_: cdouble) {.importc.}
+proc clear*() {.importc.}
+proc text*(_:cstring, x,y:cint) {.importc.}
+
 
