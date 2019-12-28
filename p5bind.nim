@@ -135,6 +135,19 @@ type
     x, y, winX, winY, id: cint
 variables(seq[TouchInfo], "touches")
 
+#################
+## STRUCTURE
+#################
+
+proc remove*() {.importc.}
+variables(bool, "disableFriendlyErrors")
+proc noLoop*() {.importc.}
+proc loop*() {.importc.}
+proc push*() {.importc.}
+proc pop*() {.importc.}
+proc redraw*() {.importc.}
+proc redraw*(n: cint) {.importc.}
+
 #####
 ## COLOR
 #####
